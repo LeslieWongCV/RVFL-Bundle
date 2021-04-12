@@ -65,8 +65,10 @@ PATH = '/Users/leslie/Downloads/MatDataset/'  # Path to the dataset
 folders = os.listdir(PATH)
 RES = []
 C_list = [1e-3, 1e-2, 1e-1, 1, 1e1, 1e2, 1e3]  # hyper-pram 1/C
+progress = 0
 
-for folder_name in folders[:4]:
+for folder_name in folders:
+    progress += 100 / 29
     file_name = folder_name
     if folder_name == '.DS_Store':
         continue
@@ -74,13 +76,12 @@ for folder_name in folders[:4]:
         matfn = PATH + folder_name + '/' + folder_name + '_Train.mat'
         df_data = loadmat(matfn)['Data']
         df_label = loadmat(matfn)['Label']
-        C = 1e1
         kf = KFold(n_splits=4, shuffle=False)
-        progress = 0
+
         for C in C_list:
-            progress += 100/len(C_list)
             vali_res = 0
             for train_index, test_index in kf.split(df_label):  # 4-fold
+
                 beta, Fl, A, B = RVFL_prototype(df_data[train_index], df_label[train_index],
                                                 C=C, n=len(df_data[1]), L=len(train_index), node_num=100)
                 y_valid = predict(df_data[test_index], beta, A, B)

@@ -88,8 +88,10 @@ for folder_name in folders:
         df_data = loadmat(matfn)['Data']
         df_label = loadmat(matfn)['Label']
         kf = KFold(n_splits=4, shuffle=False)
+
         for C in C_list:
             vali_res = 0
+
             for train_index, test_index in kf.split(df_label):  # 4-fold
                 beta, Fl, A, B = dRVFL_prototype(df_data[train_index], df_label[train_index],
                                                  C=C, n=len(df_data[1]), L=len(train_index), n_node=100)
